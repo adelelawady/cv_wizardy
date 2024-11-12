@@ -19,11 +19,11 @@ Features ✨
 Getting Started 🚀
 ------------------
 
-1.  bashCopy codegit clone https://github.com/adelelawady/cv-wizardry.git
+1.  git clone https://github.com/adelelawady/cv-wizardry.git
     
-2.  bashCopy codenpm install
+2.  npm install
     
-3.  bashCopy codenpm start
+3.  npm start
     
 
 Contributing 🤝
