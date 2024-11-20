@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => ({
   base:"/cv_wizardy/",
   server: {
     host: "::",
-    port: 8081,
+    port: 8080,
   },
   plugins: [
     react(),

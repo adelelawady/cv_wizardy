@@ -6,6 +6,7 @@ import { EducationForm } from "@/components/CVForm/EducationForm";
 import { SkillsForm } from "@/components/CVForm/SkillsForm";
 import { CVPreview } from "@/components/CVPreview/CVPreview";
 import { toast } from "@/components/ui/use-toast";
+import html2pdf from 'html2pdf.js';
 
 const steps = ["Personal Info", "Work Experience", "Education", "Skills"];
 
@@ -52,12 +53,44 @@ const Builder = () => {
     }
   };
 
-  const handleExport = () => {
-    // TODO: Implement PDF export
-    toast({
-      title: "Coming Soon!",
-      description: "PDF export will be available in the next update.",
-    });
+  const handleExport = async () => {
+    const element = document.getElementById('cv-preview');
+    if (!element) {
+      toast({
+        title: "Error",
+        description: "Could not generate PDF. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const opt = {
+      margin: 1,
+      filename: `${cvData.personalInfo.name.toLowerCase().replace(/\s+/g, '-')}-cv.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    try {
+      toast({
+        title: "Generating PDF",
+        description: "Please wait while we generate your CV...",
+      });
+      
+      await html2pdf().set(opt).from(element).save();
+      
+      toast({
+        title: "Success!",
+        description: "Your CV has been downloaded.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -132,7 +165,9 @@ const Builder = () => {
 
           {/* Preview Section */}
           <div className="w-1/2 sticky top-8">
-            <CVPreview data={cvData} />
+            <div id="cv-preview">
+              <CVPreview data={cvData} />
+            </div>
           </div>
         </div>
       </div>
