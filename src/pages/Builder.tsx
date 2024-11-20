@@ -7,6 +7,15 @@ import { SkillsForm } from "@/components/CVForm/SkillsForm";
 import { CVPreview } from "@/components/CVPreview/CVPreview";
 import { toast } from "@/components/ui/use-toast";
 import html2pdf from 'html2pdf.js';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { TemplateType } from "@/components/CVPreview/CVPreview";
+import { Label } from "@/components/ui/label";
 
 const steps = ["Personal Info", "Work Experience", "Education", "Skills"];
 
@@ -40,6 +49,7 @@ const Builder = () => {
     education: [],
     skills: [],
   });
+  const [template, setTemplate] = useState<TemplateType>("classic");
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -109,6 +119,21 @@ const Builder = () => {
                 </div>
               </div>
 
+              {/* Template Selection */}
+              <div className="mb-8">
+                <Label>Template Style</Label>
+                <Select value={template} onValueChange={(value: TemplateType) => setTemplate(value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a template" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="classic">Classic</SelectItem>
+                    <SelectItem value="modern">Modern</SelectItem>
+                    <SelectItem value="minimal">Minimal</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               {currentStep === 0 && (
                 <PersonalInfoForm
                   data={cvData.personalInfo}
@@ -166,7 +191,7 @@ const Builder = () => {
           {/* Preview Section */}
           <div className="w-1/2 sticky top-8">
             <div id="cv-preview">
-              <CVPreview data={cvData} />
+              <CVPreview data={cvData} template={template} />
             </div>
           </div>
         </div>

@@ -1,0 +1,3 @@
+export const ClassicTemplate = ({ data }: { data: CVData }) => {
+  // ... existing template code ...
+}; 
