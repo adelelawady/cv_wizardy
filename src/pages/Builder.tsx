@@ -91,6 +91,12 @@ const templates = [
     description: 'Clean and efficient layout with clear sections',
     thumbnail: '/templates/compact.png'
   },
+  {
+    id: 'executive' as const,
+    name: 'Executive',
+    description: 'Professional layout with clear sections and metrics',
+    thumbnail: '/templates/executive.png'
+  },
 ] as const;
 
 
