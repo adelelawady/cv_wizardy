@@ -121,6 +121,12 @@ const templates = [
     description: 'Traditional resume format with clean typography',
     thumbnail: '/templates/standard.png'
   },
+  {
+    id: 'coralModern' as const,
+    name: 'Coral Modern',
+    description: 'Clean and professional design with coral accents',
+    thumbnail: '/templates/coral-modern.png'
+  },
 ] as const;
 
 

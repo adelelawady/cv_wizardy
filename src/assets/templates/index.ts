@@ -13,6 +13,7 @@ import vibrantThumb from './vibrant.png';
 import elegantSplitThumb from './elegant-split.png';
 import aquaSplitThumb from './aqua-split.png';
 import standardThumb from './standard.png';
+import coralModernThumb from './coral-modern.png';
 
 export const templateThumbnails = {
   professional: professionalThumb,
@@ -30,4 +31,5 @@ export const templateThumbnails = {
   elegantSplit: elegantSplitThumb,
   aquaSplit: aquaSplitThumb,
   standard: standardThumb,
+  coralModern: coralModernThumb,
 } as const; 
