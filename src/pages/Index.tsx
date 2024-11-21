@@ -121,13 +121,13 @@ const Index = () => {
             <TemplateCard
               title="Elegant Split"
               description="Professional two-column layout with photo"
-              imageSrc="/templates/elegant-split.png"
+              imageSrc="/templates/elegantSplit.png"
               onClick={() => navigate("/builder?template=elegantSplit")}
             />
             <TemplateCard
               title="Aqua Split"
               description="Modern two-column layout with fresh aqua accent"
-              imageSrc="/templates/aqua-split.png"
+              imageSrc="/templates/aquaSplit.png"
               onClick={() => navigate("/builder?template=aquaSplit")}
             />
             <TemplateCard
@@ -139,7 +139,7 @@ const Index = () => {
             <TemplateCard
               title="Coral Modern"
               description="Clean and professional design with coral accents"
-              imageSrc="/templates/coral-modern.png"
+              imageSrc="/templates/coralModern.png"
               onClick={() => navigate("/builder?template=coralModern")}
             />
           </div>
@@ -180,13 +180,14 @@ const TemplateCard = ({
     className="group cursor-pointer hover:shadow-lg transition-all duration-300 rounded-lg overflow-hidden border border-gray-200"
     onClick={onClick}
   >
-    <div className="aspect-[210/297] relative overflow-hidden">
+    <div className="relative h-[400px] overflow-hidden bg-gray-50">
       <img
         src={imageSrc}
         alt={`${title} Template Preview`}
-        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        className="w-full h-full object-contain"
+        loading="lazy"
       />
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
     </div>
     <div className="p-4">
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
