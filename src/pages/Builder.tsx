@@ -103,6 +103,18 @@ const templates = [
     description: 'Modern dark theme with vibrant red accents',
     thumbnail: '/templates/vibrant.png'
   },
+  {
+    id: 'elegantSplit' as const,
+    name: 'Elegant Split',
+    description: 'Professional two-column layout with photo',
+    thumbnail: '/templates/elegant-split.png'
+  },
+  {
+    id: 'aquaSplit' as const,
+    name: 'Aqua Split',
+    description: 'Modern two-column layout with fresh aqua accent',
+    thumbnail: '/templates/aqua-split.png'
+  },
 ] as const;
 
 

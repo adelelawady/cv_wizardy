@@ -12,6 +12,8 @@ import { AccentTemplate } from '../templates/AccentTemplate';
 import { CompactTemplate } from '../templates/CompactTemplate';
 import { ExecutiveTemplate } from '../templates/ExecutiveTemplate';
 import { VibrantTemplate } from '../templates/VibrantTemplate';
+import { ElegantSplitTemplate } from '@/components/templates/ElegantSplitTemplate';
+import { AquaSplitTemplate } from '@/components/templates/AquaSplitTemplate';
 import type { BasicTemplateData, ModernTemplateData, CreativeTemplateData, TemplateData } from '@/types/template';
 
 interface TemplateBuilderProps {
@@ -78,8 +80,12 @@ export function TemplateBuilder({ containerRef }: TemplateBuilderProps) {
         return <ExecutiveTemplate className='h-full' data={templateData} />;
       case 'vibrant':
         return <VibrantTemplate className='h-full' data={templateData} />;
+      case 'elegantSplit':
+        return <ElegantSplitTemplate className='h-full' data={templateData} />;
+      case 'aquaSplit':
+        return <AquaSplitTemplate className='h-full' data={templateData} />;
       default:
-        return <ProfessionalTemplate  data={templateData} />;
+        return null;
     }
   };
 

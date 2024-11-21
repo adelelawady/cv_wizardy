@@ -10,6 +10,8 @@ import accentThumb from './accent.png';
 import compactThumb from './compact.png';
 import executiveThumb from './executive.png';
 import vibrantThumb from './vibrant.png';
+import elegantSplitThumb from './elegant-split.png';
+import aquaSplitThumb from './aqua-split.png';
 
 export const templateThumbnails = {
   professional: professionalThumb,
@@ -24,4 +26,6 @@ export const templateThumbnails = {
   compact: compactThumb,
   executive: executiveThumb,
   vibrant: vibrantThumb,
+  elegantSplit: elegantSplitThumb,
+  aquaSplit: aquaSplitThumb,
 } as const; 
