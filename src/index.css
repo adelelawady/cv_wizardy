@@ -157,14 +157,7 @@
     color-adjust: exact !important;
   }
 
-  /* Ensure proper page size */
-  #resume-template {
-    width: 210mm !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    height: auto !important;
-    overflow: visible !important;
-  }
+
 
   /* Fix for background colors and gradients */
   @-moz-document url-prefix() {
@@ -183,12 +176,26 @@
   .text-white {
     color: white !important;
   }
+
+  /* Ensure backgrounds print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Force background colors to print */
+  [style*="background"] {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  /* Ensure gradients print properly */
+  [class*="bg-gradient"] {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
 }
-
-
-
-
-
 
 
 /* Basic reset to remove any unwanted styles */

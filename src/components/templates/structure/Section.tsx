@@ -15,7 +15,7 @@ export function Section({
   icon
 }: SectionProps) {
   return (
-    <section className={cn("mb-6 print:break-inside-avoid", className)}>
+    <section className={cn("mb-6 ", className)}>
       {title && (
         <div className="flex items-center gap-2 mb-4">
           {icon && <div className="text-gray-700">{icon}</div>}
@@ -24,7 +24,7 @@ export function Section({
           </h2>
         </div>
       )}
-      <div className="print:break-inside-avoid">
+      <div className="">
         {children}
       </div>
     </section>

@@ -2,15 +2,18 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, FileText, Palette, Download, FileSearch } from "lucide-react";
 
+const isDevelopment = import.meta.env.MODE === 'development';
+const isProduction = import.meta.env.MODE === 'production';
 
+const imageTemplateSrc=isProduction?'/cv_wizardy/templates/':'/templates/';
 
 const  Footer = () => {
   return (
     <footer className="bg-gray-800 text-white py-6 my-2">
       <div className="container mx-auto text-center">
-        <h2 className="text-2xl font-semibold mb-2">Adele Lawady Portfolio</h2>
+        <h2 className="text-2xl font-semibold mb-2">Adel eLawady cv_wizardy</h2>
         <p className="text-gray-400 mb-4">
-          Showcasing my professional projects and skills.
+        CV Wizardry This tool is designed to help you create, customize, and export professional CVs quickly and easily.
         </p>
         <div className="flex justify-center gap-4 mb-4">
           <a href="https://github.com/adelelawady" className="text-white hover:text-gray-300">
@@ -24,7 +27,7 @@ const  Footer = () => {
           </a>
         </div>
         <p className="text-gray-500">
-          Created with ❤️ by Adele Lawady. © {new Date().getFullYear()}
+          Created with ❤️ by Adel eLawady. © {new Date().getFullYear()}
         </p>
       </div>
     </footer>
@@ -79,97 +82,97 @@ const Index = () => {
             <TemplateCard
               title="Professional"
               description="Clean and modern design with a professional look"
-              imageSrc="/templates/professional.png"
+              imageSrc={imageTemplateSrc+"professional.png"}
               onClick={() => navigate("/builder?template=professional")}
             />
             <TemplateCard
               title="Minimalist"
               description="Simple and elegant design focused on content"
-              imageSrc="/templates/minimalist.png"
+              imageSrc={imageTemplateSrc+"minimalist.png"}
               onClick={() => navigate("/builder?template=minimalist")}
             />
             <TemplateCard
               title="Creative"
               description="Stand out with a unique and creative layout"
-              imageSrc="/templates/creative.png"
+              imageSrc={imageTemplateSrc+"creative.png"}
               onClick={() => navigate("/builder?template=creative")}
             />
             <TemplateCard
               title="Modern"
               description="Contemporary design with a professional edge"
-              imageSrc="/templates/modern.png"
+              imageSrc={imageTemplateSrc+"modern.png"}
               onClick={() => navigate("/builder?template=modern")}
             />
             <TemplateCard
               title="Basic"
               description="Traditional resume layout, perfect for ATS"
-              imageSrc="/templates/basic.png"
+              imageSrc={imageTemplateSrc+"basic.png"}
               onClick={() => navigate("/builder?template=basic")}
             />
             <TemplateCard
               title="Elegant"
               description="Professional layout with a distinctive dark theme"
-              imageSrc="/templates/elegant.png"
+              imageSrc={imageTemplateSrc+"elegant.png"}
               onClick={() => navigate("/builder?template=elegant")}
             />
             <TemplateCard
               title="Mechanical"
               description="Modern technical design with engineering focus"
-              imageSrc="/templates/mechanical.png"
+              imageSrc={imageTemplateSrc+"mechanical.png"}
               onClick={() => navigate("/builder?template=mechanical")}
             />
             <TemplateCard
               title="Simple"
               description="Clean and minimal design with perfect typography"
-              imageSrc="/templates/simple.png"
+              imageSrc={imageTemplateSrc+"simple.png"}
               onClick={() => navigate("/builder?template=simple")}
             />
             <TemplateCard
               title="Accent"
               description="Modern design with distinctive side accent"
-              imageSrc="/templates/accent.png"
+              imageSrc={imageTemplateSrc+"accent.png"}
               onClick={() => navigate("/builder?template=accent")}
             />
             <TemplateCard
               title="Compact"
               description="Clean and efficient layout with clear sections"
-              imageSrc="/templates/compact.png"
+              imageSrc={imageTemplateSrc+"compact.png"}
               onClick={() => navigate("/builder?template=compact")}
             />
             <TemplateCard
               title="Executive"
               description="Professional layout with clear sections and metrics"
-              imageSrc="/templates/executive.png"
+              imageSrc={imageTemplateSrc+"executive.png"}
               onClick={() => navigate("/builder?template=executive")}
             />
             <TemplateCard
               title="Vibrant"
               description="Modern dark theme with vibrant red accents"
-              imageSrc="/templates/vibrant.png"
+              imageSrc={imageTemplateSrc+"vibrant.png"}
               onClick={() => navigate("/builder?template=vibrant")}
             />
             <TemplateCard
               title="Elegant Split"
               description="Professional two-column layout with photo"
-              imageSrc="/templates/elegantSplit.png"
+              imageSrc={imageTemplateSrc+"elegantSplit.png"}
               onClick={() => navigate("/builder?template=elegantSplit")}
             />
             <TemplateCard
               title="Aqua Split"
               description="Modern two-column layout with fresh aqua accent"
-              imageSrc="/templates/aquaSplit.png"
+              imageSrc={imageTemplateSrc+"aquaSplit.png"}
               onClick={() => navigate("/builder?template=aquaSplit")}
             />
             <TemplateCard
               title="Standard"
               description="Traditional resume format with clean typography"
-              imageSrc="/templates/standard.png"
+              imageSrc={imageTemplateSrc+"standard.png"}
               onClick={() => navigate("/builder?template=standard")}
             />
             <TemplateCard
               title="Coral Modern"
               description="Clean and professional design with coral accents"
-              imageSrc="/templates/coralModern.png"
+              imageSrc={imageTemplateSrc+"coralModern.png"}
               onClick={() => navigate("/builder?template=coralModern")}
             />
           </div>

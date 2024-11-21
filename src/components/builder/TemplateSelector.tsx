@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTemplate } from '@/contexts/TemplateContext';
+import { TemplateType, useTemplate } from '@/contexts/TemplateContext';
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

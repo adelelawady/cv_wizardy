@@ -19,33 +19,33 @@ export function TemplateStructure({
   variant = 'single'
 }: TemplateStructureProps) {
   return (
-    <div style={{height: "-webkit-fill-available"}} className={cn(
-      "w-[210mm] bg-white",
-      "print:w-[210mm] print:m-0 print:shadow-none",
-      "[@page]:size-a4 [@page]:margin-0",
+    <div  className={cn(
+      
+      //"print:w-[210mm] print:m-0 print:shadow-none",
+     
       className
     )}>
       {/* Header */}
       {header && (
-        <div className="print:break-inside-avoid-page">
+        <div >
           {header}
         </div>
       )}
 
       {/* Content */}
       {variant === 'single' ? (
-        <div className="print:break-inside-auto">
+        <div >
           {main}
         </div>
       ) : (
-        <div className="grid grid-cols-3 print:break-inside-auto">
+        <div >
           {/* Main Content - 2/3 width */}
-          <div className="col-span-2 print:break-inside-auto">
+          <div >
             {main}
           </div>
           
           {/* Sidebar - 1/3 width */}
-          <div className="col-span-1 print:break-inside-auto">
+          <div >
             {sidebar}
           </div>
         </div>
@@ -53,7 +53,7 @@ export function TemplateStructure({
 
       {/* Footer */}
       {footer && (
-        <div className="print:break-inside-avoid-page">
+        <div >
           {footer}
         </div>
       )}

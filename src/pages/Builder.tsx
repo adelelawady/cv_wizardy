@@ -15,8 +15,8 @@ import { CertificationsForm } from '@/components/forms/CertificationsForm';
 import { LanguagesForm } from '@/components/forms/LanguagesForm';
 import { InterestsForm } from '@/components/forms/InterestsForm';
 import { TemplateType, useTemplate } from '@/contexts/TemplateContext';
-import { ChevronLeft, ChevronRight, Loader2, Download, Check, FileIcon, FileText, Image, Printer } from 'lucide-react';
-import { exportToPDF, exportToImage, exportToWord } from '@/lib/export';
+import { ChevronLeft, ChevronRight, Loader2, Download, Check, FileIcon, FileText, Image, Printer, BugIcon, X } from 'lucide-react';
+import { exportToPDF, exportToImage, exportToWord, printTemplate } from '@/lib/export';
 import { useToast } from "@/components/ui/use-toast";
 import {
   DropdownMenu,
@@ -25,6 +25,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from '@/lib/utils';
+
+
+const isDevelopment = import.meta.env.MODE === 'development';
+const isProduction = import.meta.env.MODE === 'production';
+
+const imageTemplateSrc=isProduction?'/cv_wizardy/templates/':'/templates/';
 
 const formSteps = [
   { id: 'personal', title: 'Personal Info', component: PersonalInfoForm },
@@ -142,15 +148,15 @@ const exportOptions = [
     id: 'image',
     label: 'Export as Image',
     icon: Image,
-    description: 'Save as a PNG image',
-    disabled:false
+    description: 'Save as a PNG image (NEED FIX)',
+    disabled:true
 
   },
   {
     id: 'word',
     label: 'Export as Word',
     icon: FileIcon,
-    description: 'Save as a DOCX document',
+    description: 'Save as a DOCX document (NEED FIX)',
     disabled:true
 
   },
@@ -191,11 +197,6 @@ export function Builder() {
   const handleExport = async (format: 'pdf' | 'image' | 'word' | 'print') => {
     if (!templateRef.current) return;
     
-    if (format === 'print') {
-      handlePrint();
-      return;
-    }
-
     setIsExporting(true);
     try {
       switch (format) {
@@ -208,12 +209,17 @@ export function Builder() {
         case 'word':
           await exportToWord('resume-template');
           break;
+        case 'print':
+          await printTemplate('resume-template');
+          break;
       }
       
-      toast({
-        title: "Export successful",
-        description: `Resume exported as ${format.toUpperCase()} file`,
-      });
+      if (format !== 'print') {
+        toast({
+          title: "Export successful",
+          description: `Resume exported as ${format.toUpperCase()} file`,
+        });
+      }
     } catch (error) {
       console.error('Export error:', error);
       toast({
@@ -230,6 +236,11 @@ export function Builder() {
 
   const handleTemplateSelect = (templateId: TemplateType) => {
     setActiveTemplate(templateId);
+    changeTab('editor');
+  };
+  const [activeTab, setActiveTab] = useState('editor'); // Default to 'editor'
+  const changeTab = (tab) => {
+    setActiveTab(tab);
   };
 
   const handlePrint = () => {
@@ -269,11 +280,12 @@ export function Builder() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-[1800px] mx-auto px-2 py-2">
-        <Tabs defaultValue={defaultTab} className="space-y-2">
+        <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue={defaultTab} className="space-y-2">
           <div className="flex items-center justify-between">
             <TabsList>
-              <TabsTrigger value="editor">Editor</TabsTrigger>
-              { /*<TabsTrigger value="templates">Templates</TabsTrigger> */}
+            <TabsTrigger style={{    background: activeTab==='home'?'gainsboro':''}} onClick={()=>navigate('/')} value="home">Home</TabsTrigger>
+              <TabsTrigger  style={{    background: activeTab==='editor'?'gainsboro':''}}  value="editor">Editor</TabsTrigger>
+              <TabsTrigger  style={{    background: activeTab==='templates'?'gainsboro':''}}  value="templates">Templates</TabsTrigger>
             </TabsList>
             
             <div className="space-x-2">
@@ -305,6 +317,8 @@ export function Builder() {
           >
             <div className="flex items-center w-full">
               <option.icon className="w-4 h-4 mr-2 text-muted-foreground" />
+             {option.disabled &&  
+             <X /> } 
               <span className="font-medium">{option.label}</span>
             </div>
             <span className="text-xs text-muted-foreground ml-6">
@@ -384,7 +398,7 @@ export function Builder() {
                         marginTop: '-1rem'
                       }}
                     >
-                      <TemplateBuilder containerRef={templateRef} />
+                      <TemplateBuilder ref={templateRef} />
                     </div>
                   </div>
                 </ScrollArea>
@@ -428,6 +442,91 @@ export function Builder() {
               </div>
             </div>
           </TabsContent>
+
+          <TabsContent value="templates" className="space-y-4">
+            <div className="grid grid-cols-3 gap-6 p-4">
+              {templates.map((template) => (
+                <div
+                  key={template.id}
+                  className={cn(
+                    "relative group cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-200",
+                    activeTemplate === template.id
+                      ? "border-primary shadow-lg"
+                      : "border-transparent hover:border-primary/50"
+                  )}
+                  onClick={() => handleTemplateSelect(template.id)}
+                >
+                  {/* Template Preview Image */}
+                  <div className="aspect-[210/297] relative">
+                    <img
+                      src={imageTemplateSrc+template.id+'.png'}
+                      alt={template.name}
+                      className="w-full h-full object-cover"
+                    />
+                    
+                    {/* Overlay on Hover */}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center text-white p-4">
+                      <h3 className="text-xl font-semibold mb-2">{template.name}</h3>
+                      <p className="text-sm text-center text-gray-200">
+                        {template.description}
+                      </p>
+                      <Button 
+                        className="mt-4"
+                        variant="outline"
+                        onClick={() => handleTemplateSelect(template.id)}
+                      >
+                        Use Template
+                      </Button>
+                    </div>
+
+                    {/* Selected Indicator */}
+                    {activeTemplate === template.id && (
+                      <div className="absolute top-2 right-2 bg-primary text-white p-1 rounded-full">
+                        <Check className="w-4 h-4" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Template Info (Below Image) */}
+                  <div className="p-4 bg-white">
+                    <h3 className="font-medium">{template.name}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {template.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+
+
+
+
+
+
+          </TabsContent>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         </Tabs>

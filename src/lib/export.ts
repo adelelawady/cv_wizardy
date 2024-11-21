@@ -1,48 +1,117 @@
 import html2pdf from 'html2pdf.js';
-import html2canvas from 'html2canvas';
-import { asBlob } from 'html-docx-js-typescript'
-
-
 import { saveAs } from 'file-saver';
+import { asBlob } from 'html-docx-js-typescript';
+
+// Helper function to create print window with styles
+const createPrintWindow = async (elementId: string) => {
+  const element = document.getElementById(elementId);
+  if (!element) {
+    throw new Error('Template element not found');
+  }
+
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    throw new Error('Failed to open print window');
+  }
+
+  // Add print-specific styles
+  const printStyles = `
+    <style>
+      @page {
+        size: A4;
+        margin: 0;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      #print-container {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 0;
+        margin: 0;
+        background: white;
+      }
+      @media print {
+        html, body {
+          width: 210mm;
+          height: 297mm;
+        }
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          color-adjust: exact !important;
+        }
+      }
+    </style>
+  `;
+
+  // Set up the print window content
+  printWindow.document.open();
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Resume Export</title>
+        ${printStyles}
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+        ${Array.from(document.styleSheets)
+          .filter(styleSheet => !styleSheet.href || styleSheet.href.startsWith(window.location.origin))
+          .map(styleSheet => {
+            try {
+              return `<style>${Array.from(styleSheet.cssRules)
+                .map(rule => rule.cssText)
+                .join('\n')}</style>`;
+            } catch (e) {
+              console.warn('Could not load stylesheet rules');
+              return '';
+            }
+          })
+          .join('\n')}
+      </head>
+      <body>
+        <div id="print-container">
+          ${element.outerHTML}
+        </div>
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+
+  // Wait for resources to load
+  await new Promise<void>((resolve) => {
+    printWindow.onload = () => resolve();
+  });
+
+  return { printWindow, element: printWindow.document.getElementById('print-container') };
+};
 
 export async function exportToPDF(elementId: string, filename: string = 'resume.pdf') {
   try {
-    const element = document.getElementById(elementId);
-    if (!element) throw new Error('Element not found');
+    const { printWindow } = await createPrintWindow(elementId);
+    
+    // Add script to handle PDF printing
+    const script = printWindow.document.createElement('script');
+    script.textContent = `
+      window.onload = function() {
+        const mediaQueryList = window.matchMedia('print');
+        mediaQueryList.addListener(function(mql) {
+          if (!mql.matches) {
+            window.close();
+          }
+        });
+      };
+    `;
+    printWindow.document.head.appendChild(script);
 
-    const opt = {
-      margin: 0,
-      filename: filename,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { 
-        scale: 4,
-        useCORS: true,
-        logging: false,
-        letterRendering: true,
-        allowTaint: true,
-        foreignObjectRendering: true,
-      },
-      jsPDF: { 
-        unit: 'mm', 
-        format: 'a4', 
-        orientation: 'portrait',
-        compress: true,
-        precision: 16
-      },
-      pagebreak: { 
-        mode: ['avoid-all', 'css', 'legacy'],
-        before: '.page-break-before',
-        after: '.page-break-after',
-        avoid: [
-          'img', 'table', 'tr', 'td', 
-          'div.page-break-avoid', 
-          'div.section',
-          '.avoid-break'
-        ]
-      }
-    };
+    // Set the document title (will be the default PDF filename)
+    printWindow.document.title = filename.replace('.pdf', '');
 
-    await html2pdf().set(opt).from(element).save();
+    // Trigger the print dialog
+    printWindow.print();
+
     return true;
   } catch (error) {
     console.error('Error generating PDF:', error);
@@ -52,28 +121,20 @@ export async function exportToPDF(elementId: string, filename: string = 'resume.
 
 export async function exportToImage(elementId: string, filename: string = 'resume.png') {
   try {
-    const element = document.getElementById(elementId);
-    if (!element) throw new Error('Element not found');
+    const { printWindow, element } = await createPrintWindow(elementId);
+    if (!element) throw new Error('Export element not found');
 
-    // Create canvas with better quality settings
+    // Wait a bit for styles to apply
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Use html2canvas on the print window's element
     const canvas = await html2canvas(element, {
       scale: 4,
       useCORS: true,
       logging: false,
-      backgroundColor: '#ffffff',
       allowTaint: true,
       foreignObjectRendering: true,
-      windowWidth: element.scrollWidth,
-      windowHeight: element.scrollHeight,
-      onclone: (document) => {
-        const el = document.getElementById(elementId);
-        if (el) {
-          el.style.transform = 'none';
-          el.style.width = '210mm';
-          el.style.height = 'auto';
-          el.style.position = 'relative';
-        }
-      },
+      backgroundColor: '#ffffff',
     });
 
     // Create download link
@@ -84,6 +145,7 @@ export async function exportToImage(elementId: string, filename: string = 'resum
     link.click();
     document.body.removeChild(link);
     
+    printWindow.close();
     return true;
   } catch (error) {
     console.error('Error generating image:', error);
@@ -91,45 +153,45 @@ export async function exportToImage(elementId: string, filename: string = 'resum
   }
 }
 
-export  async function exportToWord(elementId: string, filename: string = 'resume.docx') {
+export async function printTemplate(elementId: string) {
+  try {
+    const { printWindow } = await createPrintWindow(elementId);
+    
+    // Trigger print
+    printWindow.print();
+    
+    // Close the window after printing
+    printWindow.onafterprint = () => {
+      printWindow.close();
+    };
+
+    return true;
+  } catch (error) {
+    console.error('Error printing template:', error);
+    throw error;
+  }
+}
+
+// Word export remains the same as it uses a different approach
+export async function exportToWord(elementId: string, filename: string = 'resume.docx') {
   try {
     const element = document.getElementById(elementId);
     if (!element) throw new Error('Element not found');
-
-    if (!element) {
-      console.error('Element not found!');
-      return;
-    }
-  
-    // Get the HTML content from the element
+    
     const htmlContent = element.outerHTML;
-  
-    // Convert HTML content to a DOCX Blob
-   // const docxBlob = htmlDocx.asBlob(htmlContent);
-   const opt = {
-    margin: {
-      top: 100
-    },
-    orientation: 'landscape' // type error: because typescript automatically widen this type to 'string' but not 'Orient' - 'string literal type'
-  }
-
-  const data = await asBlob(htmlContent, { orientation: 'landscape', margins: { top: 100 } })
+    const data = await asBlob(htmlContent, { 
+      orientation: 'portrait', 
+      margins: { top: 0, right: 0, bottom: 0, left: 0 }
+    });
 
     const blob = data instanceof ArrayBuffer || data instanceof Uint8Array
-    ? new Blob([data])
-    : data;
+      ? new Blob([data])
+      : data;
 
-    saveAs(blob, filename) // save as docx file
-    // Trigger the download
-   // saveAs(docxBlob, filename);
+    saveAs(blob, filename);
     return true;
   } catch (error) {
     console.error('Error generating Word document:', error);
     throw error;
   }
-}
-
-function convertPxToPt(fontSize: string): number {
-  const px = parseInt(fontSize);
-  return Math.round(px * 0.75); // Convert px to pt (approximately)
 } 

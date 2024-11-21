@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { useTemplate } from '@/contexts/TemplateContext';
 import { BasicTemplate } from '@/components/templates/BasicTemplate';
 import { ModernTemplate } from '@/components/templates/ModernTemplate';
@@ -22,89 +22,100 @@ interface TemplateBuilderProps {
   containerRef?: React.RefObject<HTMLDivElement>;
 }
 
-export function TemplateBuilder({ containerRef }: TemplateBuilderProps) {
-  const { activeTemplate, templateData } = useTemplate();
+export const TemplateBuilder = forwardRef<HTMLDivElement, TemplateBuilderProps>(
+  ({ containerRef }, ref) => {
+    const { activeTemplate, templateData } = useTemplate();
 
-  const convertToBasicTemplate = (data: TemplateData): BasicTemplateData => ({
-    ...data,
-    skills: data.skills.technical.map(skill => skill.name)
-  });
+    console.log("ref",ref);
+    console.log("activeTemplate",activeTemplate);
+    console.log("containerRef",containerRef);
 
-  const convertToModernTemplate = (data: TemplateData): ModernTemplateData => ({
-    ...data,
-    personalInfo: {
-      ...data.personalInfo,
-      summary: data.personalInfo.summary || ''
-    },
-    skills: {
-      technical: data.skills.technical.map(skill => skill.name),
-      soft: data.skills.soft.map(skill => skill.name)
-    }
-  });
+    const convertToBasicTemplate = (data: TemplateData): BasicTemplateData => ({
+      ...data,
+      skills: data.skills.technical.map(skill => skill.name)
+    });
 
-  const convertToCreativeTemplate = (data: TemplateData): CreativeTemplateData => ({
-    ...data,
-    personalInfo: {
-      ...data.personalInfo,
-      portfolio: data.personalInfo.portfolio || ''
-    },
-    projects: data.projects || [],
-    skills: {
-      design: data.skills.technical.map(skill => skill.name),
-      development: data.skills.soft.map(skill => skill.name),
-      tools: data.skills.languages.map(skill => skill.name)
-    }
-  });
+    const convertToModernTemplate = (data: TemplateData): ModernTemplateData => ({
+      ...data,
+      personalInfo: {
+        ...data.personalInfo,
+        summary: data.personalInfo.summary || ''
+      },
+      skills: {
+        technical: data.skills.technical.map(skill => skill.name),
+        soft: data.skills.soft.map(skill => skill.name)
+      }
+    });
 
-  const renderTemplate = () => {
-    switch (activeTemplate) {
-      case 'basic':
-        return <BasicTemplate className='h-full' data={convertToBasicTemplate(templateData)} />;
-      case 'modern':
-        return <ModernTemplate className='h-full' data={convertToModernTemplate(templateData)} />;
-      case 'creative':
-        return <CreativeTemplate className='h-full' data={convertToCreativeTemplate(templateData)} />;
-      case 'professional':
-        return <ProfessionalTemplate className='h-full' data={templateData} />;
-      case 'minimalist':
-        return <MinimalistTemplate className='h-full' data={templateData} />;
-      case 'elegant':
-        return <ElegantTemplate className='h-full' data={templateData} />;
-      case 'mechanical':
-        return <MechanicalTemplate className='h-full' data={templateData} />;
-      case 'simple':
-        return <SimpleTemplate className='h-full' data={templateData} />;
-      case 'accent':
-        return <AccentTemplate className='h-full' data={templateData} />;
-      case 'compact':
-        return <CompactTemplate className='h-full' data={templateData} />;
-      case 'executive':
-        return <ExecutiveTemplate className='h-full' data={templateData} />;
-      case 'vibrant':
-        return <VibrantTemplate className='h-full' data={templateData} />;
-      case 'elegantSplit':
-        return <ElegantSplitTemplate className='h-full' data={templateData} />;
-      case 'aquaSplit':
-        return <AquaSplitTemplate className='h-full' data={templateData} />;
-      case 'standard':
-        return <StandardTemplate className='h-full' data={templateData} />;
-      case 'coralModern':
-        return <CoralModernTemplate className='h-full' data={templateData} />;
-      default:
-        return null;
-    }
-  };
+    const convertToCreativeTemplate = (data: TemplateData): CreativeTemplateData => ({
+      ...data,
+      personalInfo: {
+        ...data.personalInfo,
+        portfolio: data.personalInfo.portfolio || ''
+      },
+      projects: data.projects || [],
+      skills: {
+        design: data.skills.technical.map(skill => skill.name),
+        development: data.skills.soft.map(skill => skill.name),
+        tools: data.skills.languages.map(skill => skill.name)
+      }
+    });
 
-  return (
-    <div className="w-full h-full overflow-auto bg-gray-100 flex justify-center">
+    const renderTemplate = (template: string, data: TemplateData) => {
+      switch (template) {
+        case 'basic':
+          return <BasicTemplate className='h-full'  data={convertToBasicTemplate(data)} />;
+        case 'modern':
+          return <ModernTemplate className='h-full' data={convertToModernTemplate(data)} />;
+        case 'creative':
+          return <CreativeTemplate className='h-full' data={convertToCreativeTemplate(data)} />;
+        case 'professional':
+          return <ProfessionalTemplate className='h-full' data={data} />;
+        case 'minimalist':
+          return <MinimalistTemplate className='h-full' data={data} />;
+        case 'elegant':
+          return <ElegantTemplate className='h-full'  data={data} />;
+        case 'mechanical':
+          return <MechanicalTemplate className='h-full' data={data} />;
+        case 'simple':
+          return <SimpleTemplate className='h-full' data={data} />;
+        case 'accent':
+          return <AccentTemplate className='h-full' data={data} />;
+        case 'compact':
+          return <CompactTemplate className='h-full'  data={data} />;
+        case 'executive':
+          return <ExecutiveTemplate className='h-full' data={data} />;
+        case 'vibrant':
+          return <VibrantTemplate className='h-full' data={data} />;
+        case 'elegantSplit':
+          return <ElegantSplitTemplate  className='h-full' data={data} />;
+        case 'aquaSplit':
+          return <AquaSplitTemplate  className='h-full' data={data} />;
+        case 'standard':
+          return <StandardTemplate className='h-full'  data={data} />;
+        case 'coralModern':
+          return <CoralModernTemplate className='h-full'  data={data} />;
+        default:
+          return null;
+      }
+    };
+
+    return (
       <div 
-       
-        ref={containerRef}
-        id="resume-template" 
-        className="relative shadow-xl "
+        ref={ref || containerRef}
+        id="resume-template"
+        className="print:shadow-none print:m-0 bg-white h-full"
+        style={{
+          width: '210mm',
+          minHeight: '297mm',
+          position: 'relative',
+          overflow: 'hidden'
+        }}
       >
-        {renderTemplate()}
+        {renderTemplate(activeTemplate, templateData)}
       </div>
-    </div>
-  );
-} 
+    );
+  }
+);
+
+TemplateBuilder.displayName = 'TemplateBuilder'; 

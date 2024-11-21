@@ -20,7 +20,7 @@ interface ProfessionalTemplateProps {
 
 export function ProfessionalTemplate({ className, data }: ProfessionalTemplateProps) {
   const Header = (
-    <header className="bg-slate-800 text-white px-8 py-6 print:break-inside-avoid">
+    <header className="bg-slate-800 text-white px-8 py-6 ">
       <h1 className="text-3xl font-bold">{data.personalInfo.name}</h1>
       <p className="text-xl mt-1 text-slate-200">{data.personalInfo.title}</p>
       <div className="flex gap-4 mt-3 text-sm text-slate-300">
@@ -43,7 +43,7 @@ export function ProfessionalTemplate({ className, data }: ProfessionalTemplatePr
   );
 
   const MainContent = (
-    <div className="p-8 print:break-inside-avoid">
+    <div className="p-8 ">
       {data.personalInfo.summary && (
         <Section title="Professional Summary">
           <p className="text-slate-600">{data.personalInfo.summary}</p>
@@ -52,7 +52,7 @@ export function ProfessionalTemplate({ className, data }: ProfessionalTemplatePr
 
       <Section title="Work Experience" icon={<Briefcase className="w-5 h-5" />}>
         {data.experience.map((exp, index) => (
-          <div key={index} className="mb-4 last:mb-0 print:break-inside-avoid">
+          <div key={index} className="mb-4 last:mb-0 ">
             <h3 className="font-medium text-slate-800">{exp.title}</h3>
             <div className="text-slate-600">
               {exp.company} | {exp.duration}
@@ -75,7 +75,7 @@ export function ProfessionalTemplate({ className, data }: ProfessionalTemplatePr
             {data.projects.map((project, index) => (
               <div 
                 key={index} 
-                className="p-4 bg-slate-50 rounded-lg print:break-inside-avoid"
+                className="p-4 bg-slate-50 rounded-lg "
               >
                 <h3 className="font-medium text-slate-800">{project.title}</h3>
                 <p className="text-slate-600 mt-1">{project.description}</p>
@@ -100,10 +100,10 @@ export function ProfessionalTemplate({ className, data }: ProfessionalTemplatePr
   );
 
   const Sidebar = (
-    <div className="p-8 bg-slate-50 print:break-inside-avoid">
+    <div className="p-8 bg-slate-50 ">
       <Section title="Skills" icon={<Award className="w-5 h-5" />}>
         {Object.entries(data.skills).map(([category, skills]) => (
-          <div key={category} className="mb-4 last:mb-0 print:break-inside-avoid">
+          <div key={category} className="mb-4 last:mb-0 ">
             <h3 className="font-medium text-slate-700 mb-2 capitalize">
               {category.replace(/([A-Z])/g, ' $1').trim()}
             </h3>
@@ -126,7 +126,7 @@ export function ProfessionalTemplate({ className, data }: ProfessionalTemplatePr
 
       <Section title="Education" icon={<GraduationCap className="w-5 h-5" />}>
         {data.education.map((edu, index) => (
-          <div key={index} className="mb-3 last:mb-0 print:break-inside-avoid">
+          <div key={index} className="mb-3 last:mb-0 ">
             <h3 className="font-medium text-slate-800">{edu.degree}</h3>
             <div className="text-slate-600">
               {edu.school} | {edu.year}
@@ -143,7 +143,7 @@ export function ProfessionalTemplate({ className, data }: ProfessionalTemplatePr
       {data.certifications && data.certifications.length > 0 && (
         <Section title="Certifications" icon={<Award className="w-5 h-5" />}>
           {data.certifications.map((cert, index) => (
-            <div key={index} className="mb-3 last:mb-0 print:break-inside-avoid">
+            <div key={index} className="mb-3 last:mb-0 ">
               <h3 className="font-medium text-slate-800">{cert.name}</h3>
               <div className="text-slate-600">
                 {cert.issuer} | {cert.date}
@@ -158,7 +158,7 @@ export function ProfessionalTemplate({ className, data }: ProfessionalTemplatePr
   return (
     <TemplateStructure
       className={cn(
-        "print:min-h-0 print:h-auto print:overflow-visible",
+       
         className
       )}
       header={Header}
