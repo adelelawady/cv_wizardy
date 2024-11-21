@@ -1,7 +1,10 @@
 CV Wizardry 🧙‍♂️📄
 ===================
-![screencapture-localhost-8081-2024-11-11-22_51_21](https://github.com/user-attachments/assets/50ce23cf-c1f2-48f9-b29d-bac7e63b9cf3)
+
 Welcome to **CV Wizardry**! This tool is designed to help you create, customize, and export professional CVs quickly and easily.
+
+![screencapture-localhost-cv-wizardy-builder-2024-11-21-18_26_13](https://github.com/user-attachments/assets/093b05af-b885-465d-8241-3a8a78c9c98a)
+
 
 Features ✨
 ----------
@@ -13,18 +16,22 @@ Features ✨
 *   **Real-time Preview** 👀
     
 *   **Export Options (PDF, DOCX)** 📂
-    
-![screencapture-localhost-8081-builder-2024-11-11-23_08_51](https://github.com/user-attachments/assets/09714d32-bad8-4a55-9bee-61bbc6328bf1)
 
 Getting Started 🚀
 ------------------
-
+```
 1.  git clone https://github.com/adelelawady/cv-wizardry.git
-    
 2.  npm install
-    
-3.  npm start
-    
+3.  npm run dev
+```
+
+Templates
+-----------
+![screencapture-localhost-cv-wizardy-2024-11-21-18_26_36](https://github.com/user-attachments/assets/08a87ebd-3a4b-4610-8c87-79967c59a099)
+
+
+
+
 
 Contributing 🤝
 ---------------
