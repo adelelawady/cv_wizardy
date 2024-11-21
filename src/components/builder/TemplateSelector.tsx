@@ -3,7 +3,7 @@ import { useTemplate } from '@/contexts/TemplateContext';
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Check } from 'lucide-react';
 
 const templates = [
@@ -42,50 +42,39 @@ const templates = [
 export function TemplateSelector() {
   const { activeTemplate, setActiveTemplate } = useTemplate();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const handleTemplateSelect = (templateId: typeof templates[number]['id']) => {
+  const handleTemplateSelect = (templateId: TemplateType) => {
     setActiveTemplate(templateId);
-    navigate('/builder?tab=editor');
+    setSearchParams({ template: templateId }, { replace: true });
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {templates.map((template) => (
         <Card
           key={template.id}
           className={cn(
-            "relative overflow-hidden cursor-pointer group hover:border-primary transition-all",
-            activeTemplate === template.id && "border-primary ring-2 ring-primary ring-offset-2"
+            "cursor-pointer hover:shadow-md transition-shadow",
+            activeTemplate === template.id && "ring-2 ring-primary"
           )}
-          onClick={() => handleTemplateSelect(template.id as any)}
+          onClick={() => handleTemplateSelect(template.id)}
         >
-          {/* Template Preview */}
-          <div className="aspect-[210/297] relative overflow-hidden rounded-t-lg">
+          <div className="aspect-[210/297] relative overflow-hidden">
             <img
               src={template.thumbnail}
               alt={template.name}
-              className="object-cover w-full h-full transition-transform group-hover:scale-105"
+              className="w-full h-full object-cover"
             />
-            {/* Selection Overlay */}
             {activeTemplate === template.id && (
-              <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-                <div className="bg-primary text-primary-foreground rounded-full p-2">
-                  <Check className="w-6 h-6" />
-                </div>
+              <div className="absolute top-2 right-2 bg-primary text-white p-1 rounded-full">
+                <Check className="w-4 h-4" />
               </div>
             )}
           </div>
-
-          {/* Template Info */}
           <div className="p-4">
-            <h3 className="font-semibold">{template.name}</h3>
+            <h3 className="font-medium">{template.name}</h3>
             <p className="text-sm text-muted-foreground">{template.description}</p>
-            <Button 
-              className="w-full mt-4"
-              variant={activeTemplate === template.id ? "default" : "outline"}
-            >
-              {activeTemplate === template.id ? "Selected" : "Use Template"}
-            </Button>
           </div>
         </Card>
       ))}

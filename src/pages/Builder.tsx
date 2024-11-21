@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { TemplateBuilder } from '@/components/builder/TemplateBuilder';
 import { TemplateSelector } from '@/components/builder/TemplateSelector';
@@ -235,6 +235,36 @@ export function Builder() {
   const handlePrint = () => {
     navigate('/print');
   };
+
+  // Handle template selection from URL parameter
+  useEffect(() => {
+    const templateParam = searchParams.get('template');
+    if (templateParam) {
+      // Validate that the template exists in our supported templates
+      const isValidTemplate = [
+        'professional',
+        'minimalist',
+        'creative',
+        'modern',
+        'basic',
+        'elegant',
+        'mechanical',
+        'simple',
+        'accent',
+        'compact',
+        'executive',
+        'vibrant',
+        'elegantSplit',
+        'aquaSplit',
+        'standard',
+        'coralModern'
+      ].includes(templateParam);
+
+      if (isValidTemplate) {
+        setActiveTemplate(templateParam as TemplateType);
+      }
+    }
+  }, [searchParams, setActiveTemplate]);
 
   return (
     <div className="min-h-screen bg-background">
