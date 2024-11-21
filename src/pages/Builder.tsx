@@ -93,11 +93,46 @@ const templates = [
   },
 ] as const;
 
+
+const exportOptions = [
+  {
+    id: 'pdf',
+    label: 'Export as PDF',
+    icon: FileText,
+    description: 'Save as a PDF document',
+    disabled:false
+  },
+  {
+    id: 'image',
+    label: 'Export as Image',
+    icon: Image,
+    description: 'Save as a PNG image',
+    disabled:false
+
+  },
+  {
+    id: 'word',
+    label: 'Export as Word',
+    icon: FileIcon,
+    description: 'Save as a DOCX document',
+    disabled:true
+
+  },
+  {
+    id: 'print',
+    label: 'Print Resume',
+    icon: Printer,
+    description: 'Open print preview',
+    disabled:false
+
+  }
+] as const;
+
 export function Builder() {
   const { templateData, updateTemplateData, activeTemplate, setActiveTemplate } = useTemplate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const defaultTab = searchParams.get('tab') || 'templates';
+  const defaultTab = searchParams.get('tab') || 'editor';
   const [currentStep, setCurrentStep] = useState(0);
   const [previewOpen, setPreviewOpen] = useState(false);
   const { toast } = useToast();
@@ -185,7 +220,7 @@ export function Builder() {
               
               <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button disabled={isExporting}>
+        <Button variant="default" size="default" disabled={isExporting}>
           {isExporting ? (
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
           ) : (
@@ -194,23 +229,23 @@ export function Builder() {
           Export
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => handleExport('pdf')}>
-          <FileText className="w-4 h-4 mr-2" />
-          Export as PDF
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleExport('image')}>
-          <Image className="w-4 h-4 mr-2" />
-          Export as Image
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleExport('word')}>
-          <FileIcon className="w-4 h-4 mr-2" />
-          Export as Word
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleExport('print')}>
-          <Printer className="w-4 h-4 mr-2" />
-          Print Resume
-        </DropdownMenuItem>
+      <DropdownMenuContent align="end" className="w-56">
+        {exportOptions.map((option) => (
+          <DropdownMenuItem
+            disabled={option.disabled}
+            key={option.id}
+            onClick={() => handleExport(option.id)}
+            className="flex flex-col items-start py-2 cursor-pointer"
+          >
+            <div className="flex items-center w-full">
+              <option.icon className="w-4 h-4 mr-2 text-muted-foreground" />
+              <span className="font-medium">{option.label}</span>
+            </div>
+            <span className="text-xs text-muted-foreground ml-6">
+              {option.description}
+            </span>
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
             </div>
@@ -328,9 +363,7 @@ export function Builder() {
             </div>
           </TabsContent>
 
-          <TabsContent value="templates">
-            <TemplateSelector />
-          </TabsContent>
+
         </Tabs>
       </div>
 

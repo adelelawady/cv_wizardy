@@ -17,16 +17,16 @@ interface PreviewModalProps {
 export function PreviewModal({ open, onOpenChange }: PreviewModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[1100px] w-[90vw] h-[90vh]">
-        <DialogHeader>
-          <DialogTitle>Resume Preview</DialogTitle>
-          <DialogDescription>
-            This is how your resume will look when downloaded
+      <DialogContent className="max-w-[1200px] w-[90vw] h-[90vh] rounded-lg shadow-lg p-6 bg-white">
+        <DialogHeader className="border-b border-gray-200 pb-4">
+          <DialogTitle className="text-2xl font-semibold text-gray-900">Resume Preview</DialogTitle>
+          <DialogDescription className="mt-2 text-sm text-gray-600">
+            This is how your resume will look when downloaded.
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-1 p-6 bg-muted rounded-md">
+        <ScrollArea className="flex-1 mt-6 overflow-hidden rounded-md bg-gray-50 shadow-md">
           <div className="flex justify-center">
-            <div className="shadow-2xl">
+            <div className="w-full max-w-3xl p-4 bg-white rounded-lg shadow-xl">
               <TemplateBuilder />
             </div>
           </div>
@@ -34,4 +34,4 @@ export function PreviewModal({ open, onOpenChange }: PreviewModalProps) {
       </DialogContent>
     </Dialog>
   );
-} 
+}

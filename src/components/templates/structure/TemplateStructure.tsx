@@ -19,7 +19,7 @@ export function TemplateStructure({
   variant = 'single'
 }: TemplateStructureProps) {
   return (
-    <div className={cn(
+    <div style={{height: "-webkit-fill-available"}} className={cn(
       "w-[210mm] bg-white",
       "print:w-[210mm] print:m-0 print:shadow-none",
       "[@page]:size-a4 [@page]:margin-0",

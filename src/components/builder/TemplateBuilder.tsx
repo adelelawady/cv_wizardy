@@ -54,38 +54,39 @@ export function TemplateBuilder({ containerRef }: TemplateBuilderProps) {
   const renderTemplate = () => {
     switch (activeTemplate) {
       case 'basic':
-        return <BasicTemplate data={convertToBasicTemplate(templateData)} />;
+        return <BasicTemplate className='h-full' data={convertToBasicTemplate(templateData)} />;
       case 'modern':
-        return <ModernTemplate data={convertToModernTemplate(templateData)} />;
+        return <ModernTemplate className='h-full' data={convertToModernTemplate(templateData)} />;
       case 'creative':
-        return <CreativeTemplate data={convertToCreativeTemplate(templateData)} />;
+        return <CreativeTemplate className='h-full' data={convertToCreativeTemplate(templateData)} />;
       case 'professional':
-        return <ProfessionalTemplate data={templateData} />;
+        return <ProfessionalTemplate className='h-full' data={templateData} />;
       case 'minimalist':
-        return <MinimalistTemplate data={templateData} />;
+        return <MinimalistTemplate className='h-full' data={templateData} />;
       case 'elegant':
-        return <ElegantTemplate data={templateData} />;
+        return <ElegantTemplate className='h-full' data={templateData} />;
       case 'mechanical':
-        return <MechanicalTemplate data={templateData} />;
+        return <MechanicalTemplate className='h-full' data={templateData} />;
       case 'simple':
-        return <SimpleTemplate data={templateData} />;
+        return <SimpleTemplate className='h-full' data={templateData} />;
       case 'accent':
-        return <AccentTemplate data={templateData} />;
+        return <AccentTemplate className='h-full' data={templateData} />;
       case 'compact':
-        return <CompactTemplate data={templateData} />;
+        return <CompactTemplate className='h-full' data={templateData} />;
       case 'executive':
-        return <ExecutiveTemplate data={templateData} />;
+        return <ExecutiveTemplate className='h-full' data={templateData} />;
       default:
-        return <ProfessionalTemplate data={templateData} />;
+        return <ProfessionalTemplate  data={templateData} />;
     }
   };
 
   return (
     <div className="w-full h-full overflow-auto bg-gray-100 flex justify-center">
       <div 
+       
         ref={containerRef}
         id="resume-template" 
-        className="relative shadow-xl"
+        className="relative shadow-xl "
       >
         {renderTemplate()}
       </div>
