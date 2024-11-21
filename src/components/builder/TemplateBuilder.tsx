@@ -14,6 +14,7 @@ import { ExecutiveTemplate } from '../templates/ExecutiveTemplate';
 import { VibrantTemplate } from '../templates/VibrantTemplate';
 import { ElegantSplitTemplate } from '@/components/templates/ElegantSplitTemplate';
 import { AquaSplitTemplate } from '@/components/templates/AquaSplitTemplate';
+import { StandardTemplate } from '@/components/templates/StandardTemplate';
 import type { BasicTemplateData, ModernTemplateData, CreativeTemplateData, TemplateData } from '@/types/template';
 
 interface TemplateBuilderProps {
@@ -84,6 +85,8 @@ export function TemplateBuilder({ containerRef }: TemplateBuilderProps) {
         return <ElegantSplitTemplate className='h-full' data={templateData} />;
       case 'aquaSplit':
         return <AquaSplitTemplate className='h-full' data={templateData} />;
+      case 'standard':
+        return <StandardTemplate className='h-full' data={templateData} />;
       default:
         return null;
     }

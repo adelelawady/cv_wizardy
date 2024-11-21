@@ -115,7 +115,8 @@ export type TemplateType =
   | "compact"
   | "executive"
   | "vibrant"
-  | "elegantSplit";
+  | "elegantSplit"
+  | "aquaSplit";
 
 // Add template-specific interface if needed
 export interface CompactTemplateData extends TemplateData {

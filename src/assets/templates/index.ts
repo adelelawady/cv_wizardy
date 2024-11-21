@@ -12,6 +12,7 @@ import executiveThumb from './executive.png';
 import vibrantThumb from './vibrant.png';
 import elegantSplitThumb from './elegant-split.png';
 import aquaSplitThumb from './aqua-split.png';
+import standardThumb from './standard.png';
 
 export const templateThumbnails = {
   professional: professionalThumb,
@@ -28,4 +29,5 @@ export const templateThumbnails = {
   vibrant: vibrantThumb,
   elegantSplit: elegantSplitThumb,
   aquaSplit: aquaSplitThumb,
+  standard: standardThumb,
 } as const; 

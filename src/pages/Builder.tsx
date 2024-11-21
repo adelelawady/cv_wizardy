@@ -115,6 +115,12 @@ const templates = [
     description: 'Modern two-column layout with fresh aqua accent',
     thumbnail: '/templates/aqua-split.png'
   },
+  {
+    id: 'standard' as const,
+    name: 'Standard',
+    description: 'Traditional resume format with clean typography',
+    thumbnail: '/templates/standard.png'
+  },
 ] as const;
 
 

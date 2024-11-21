@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from "@/lib/utils";
 import type { TemplateData } from "@/types/template";
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin, Linkedin, Globe } from 'lucide-react';
 
 interface AquaSplitTemplateProps {
   className?: string;
@@ -10,131 +10,130 @@ interface AquaSplitTemplateProps {
 
 export function AquaSplitTemplate({ className, data }: AquaSplitTemplateProps) {
   return (
-    <div className={cn("min-h-[297mm] w-[210mm] bg-white font-sans grid grid-cols-[2fr_1fr]", className)}>
-      {/* Left Column - Main Content */}
-      <div className="p-12 bg-white">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">{data.personalInfo.name}</h1>
-        
-        {/* Personal Profile */}
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Personal profile</h2>
-          <p className="text-gray-600 leading-relaxed">
-            {data.personalInfo.summary}
-          </p>
-        </section>
+    <div className={cn("min-h-[297mm] w-[210mm] bg-white font-sans grid grid-cols-[1fr_2fr]", className)}>
+      {/* Left Sidebar */}
+      <div className="bg-[#2A9D8F] text-white p-8">
+        {/* Profile Photo Area */}
+        <div className="w-32 h-32 mx-auto mb-6 bg-white/20 rounded-full flex items-center justify-center">
+          {/* Photo placeholder */}
+          <span className="text-4xl">
+            {data.personalInfo.name.charAt(0)}
+          </span>
+        </div>
 
-        {/* Work Experience */}
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Work experience</h2>
+        {/* Contact Information */}
+        <div className="space-y-4 mb-8">
+          <h2 className="text-xl font-semibold mb-4">Contact</h2>
+          {data.personalInfo.email && (
+            <div className="flex items-center gap-3">
+              <Mail className="w-4 h-4" />
+              <span className="text-sm">{data.personalInfo.email}</span>
+            </div>
+          )}
+          {data.personalInfo.phone && (
+            <div className="flex items-center gap-3">
+              <Phone className="w-4 h-4" />
+              <span className="text-sm">{data.personalInfo.phone}</span>
+            </div>
+          )}
+          {data.personalInfo.location && (
+            <div className="flex items-center gap-3">
+              <MapPin className="w-4 h-4" />
+              <span className="text-sm">{data.personalInfo.location}</span>
+            </div>
+          )}
+          {data.personalInfo.linkedin && (
+            <div className="flex items-center gap-3">
+              <Linkedin className="w-4 h-4" />
+              <span className="text-sm">LinkedIn Profile</span>
+            </div>
+          )}
+        </div>
+
+        {/* Skills */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Skills</h2>
+          <div className="space-y-2">
+            {data.skills.technical.map((skill, index) => (
+              <div key={index} className="bg-white/10 px-3 py-2 rounded-md">
+                <div className="text-sm">{skill.name}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Languages */}
+        {data.skills.languages.length > 0 && (
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Languages</h2>
+            <div className="space-y-2">
+              {data.skills.languages.map((language, index) => (
+                <div key={index} className="bg-white/10 px-3 py-2 rounded-md">
+                  <div className="text-sm">{language.name}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Main Content */}
+      <div className="p-8 bg-white">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            {data.personalInfo.name}
+          </h1>
+          <h2 className="text-xl text-[#2A9D8F]">{data.personalInfo.title}</h2>
+          {data.personalInfo.summary && (
+            <p className="mt-4 text-gray-600 leading-relaxed">
+              {data.personalInfo.summary}
+            </p>
+          )}
+        </div>
+
+        {/* Experience */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 pb-2 border-b-2 border-[#2A9D8F]">
+            Experience
+          </h2>
           <div className="space-y-6">
             {data.experience.map((exp, index) => (
-              <div key={index}>
-                <h3 className="font-semibold text-gray-900">
-                  {exp.title}, {exp.company}, {exp.location}, {exp.duration}
-                </h3>
-                <p className="text-gray-600 mt-2">{exp.description}</p>
+              <div key={index} className="print:break-inside-avoid">
+                <h3 className="font-bold text-gray-900">{exp.title}</h3>
+                <div className="text-[#2A9D8F] font-medium">{exp.company}</div>
+                <div className="text-gray-600 text-sm mb-2">{exp.duration}</div>
+                <p className="text-gray-700">{exp.description}</p>
                 {exp.achievements && (
-                  <ul className="mt-2 list-disc list-inside text-gray-600">
+                  <ul className="list-disc list-inside mt-2 text-gray-600">
                     {exp.achievements.map((achievement, i) => (
-                      <li key={i} className="italic">{achievement}</li>
+                      <li key={i}>{achievement}</li>
                     ))}
                   </ul>
                 )}
               </div>
             ))}
           </div>
-        </section>
-
-        {/* Certifications */}
-        <section>
-          <h2 className="text-xl font-semibold mb-4">Certifications</h2>
-          <div className="space-y-2">
-            {data.certifications?.map((cert, index) => (
-              <div key={index}>
-                <div className="font-medium">{cert.name}</div>
-                <div className="text-gray-600">
-                  {cert.issuer}, {cert.date}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
-
-      {/* Right Column - Sidebar */}
-      <div className="bg-cyan-500 text-white p-8">
-        {/* Personal Details */}
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Personal details</h2>
-          <div className="space-y-2">
-            <div>
-              <div className="font-medium">Name</div>
-              <div>{data.personalInfo.name}</div>
-            </div>
-            <div>
-              <div className="font-medium">Address</div>
-              <div>{data.personalInfo.location}</div>
-            </div>
-            <div>
-              <div className="font-medium">Phone number</div>
-              <div>{data.personalInfo.phone}</div>
-            </div>
-            <div>
-              <div className="font-medium">Email</div>
-              <div>{data.personalInfo.email}</div>
-            </div>
-          </div>
-        </section>
+        </div>
 
         {/* Education */}
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Education</h2>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 pb-2 border-b-2 border-[#2A9D8F]">
+            Education
+          </h2>
           <div className="space-y-4">
             {data.education.map((edu, index) => (
-              <div key={index}>
-                <div className="font-medium">{edu.degree}</div>
-                <div>{edu.school}</div>
-                <div>{edu.year}</div>
+              <div key={index} className="print:break-inside-avoid">
+                <h3 className="font-bold text-gray-900">{edu.degree}</h3>
+                <div className="text-[#2A9D8F]">{edu.school}</div>
+                <div className="text-gray-600 text-sm">{edu.year}</div>
+                {edu.gpa && (
+                  <div className="text-gray-600 text-sm">GPA: {edu.gpa}</div>
+                )}
               </div>
             ))}
           </div>
-        </section>
-
-        {/* Skills */}
-        <section className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Skills</h2>
-          <div className="space-y-4">
-            {Object.entries(data.skills).map(([category, skills]) => (
-              <div key={category}>
-                <h3 className="font-medium capitalize mb-2">
-                  {category.replace(/([A-Z])/g, ' $1').trim()}
-                </h3>
-                <div className="space-y-1">
-                  {skills.map((skill, index) => (
-                    <div key={index} className="text-cyan-50">
-                      {skill.name}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Languages */}
-        <section>
-          <h2 className="text-xl font-semibold mb-4">Languages</h2>
-          <div className="space-y-2">
-            {data.skills.languages.map((lang, index) => (
-              <div key={index}>
-                <div className="font-medium">{lang.name}</div>
-                <div className="text-cyan-50">
-                  {lang.level ? `Level ${lang.level}` : 'Fluent'}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        </div>
       </div>
     </div>
   );

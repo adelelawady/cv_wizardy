@@ -15,7 +15,8 @@ export type TemplateType =
   | "executive"
   | "vibrant"
   | "elegantSplit"
-  | "aquaSplit";
+  | "aquaSplit"
+  | "standard";
 
 interface TemplateContextType {
   activeTemplate: TemplateType;
