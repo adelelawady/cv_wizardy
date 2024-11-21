@@ -97,6 +97,12 @@ const templates = [
     description: 'Professional layout with clear sections and metrics',
     thumbnail: '/templates/executive.png'
   },
+  {
+    id: 'vibrant' as const,
+    name: 'Vibrant',
+    description: 'Modern dark theme with vibrant red accents',
+    thumbnail: '/templates/vibrant.png'
+  },
 ] as const;
 
 

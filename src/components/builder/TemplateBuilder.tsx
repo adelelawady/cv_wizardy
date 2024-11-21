@@ -11,6 +11,7 @@ import { SimpleTemplate } from '../templates/SimpleTemplate';
 import { AccentTemplate } from '../templates/AccentTemplate';
 import { CompactTemplate } from '../templates/CompactTemplate';
 import { ExecutiveTemplate } from '../templates/ExecutiveTemplate';
+import { VibrantTemplate } from '../templates/VibrantTemplate';
 import type { BasicTemplateData, ModernTemplateData, CreativeTemplateData, TemplateData } from '@/types/template';
 
 interface TemplateBuilderProps {
@@ -75,6 +76,8 @@ export function TemplateBuilder({ containerRef }: TemplateBuilderProps) {
         return <CompactTemplate className='h-full' data={templateData} />;
       case 'executive':
         return <ExecutiveTemplate className='h-full' data={templateData} />;
+      case 'vibrant':
+        return <VibrantTemplate className='h-full' data={templateData} />;
       default:
         return <ProfessionalTemplate  data={templateData} />;
     }

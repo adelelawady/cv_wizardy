@@ -8,7 +8,12 @@ export type TemplateType =
   | "modern" 
   | "basic" 
   | "elegant"
-  | "mechanical";
+  | "mechanical"
+  | "simple"
+  | "accent"
+  | "compact"
+  | "executive"
+  | "vibrant";
 
 interface TemplateContextType {
   activeTemplate: TemplateType;
