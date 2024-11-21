@@ -45,33 +45,104 @@ const Index = () => {
         {/* New Section for Multiple Templates */}
         <div className="mt-20 text-center">
           <h2 className="text-3xl font-semibold mb-8">Explore Our Templates</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-  <TemplateCard
-    title="Classic"
-    description="A timeless design for traditional industries."
-    imageSrc="/images/templates/classic-preview.jpg"
-    onClick={() => navigate("/builder?template=classic")}
-  />
-  <TemplateCard
-    title="Modern"
-    description="Sleek and professional for contemporary fields."
-    imageSrc="/images/templates/modern-preview.jpg"
-    onClick={() => navigate("/builder?template=modern")}
-  />
-  <TemplateCard
-    title="Creative"
-    description="Bold and eye-catching for creative industries."
-    imageSrc="/images/templates/creative-preview.jpg"
-    onClick={() => navigate("/builder?template=creative")}
-  />
-  <TemplateCard
-    title="Minimalist"
-    description="Clean and simple for a minimalist approach."
-    imageSrc="/images/templates/minimalist-preview.jpg"
-    onClick={() => navigate("/builder?template=minimalist")}
-  />
-</div>
-
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <TemplateCard
+              title="Professional"
+              description="Clean and modern design with a professional look"
+              imageSrc="/templates/professional.png"
+              onClick={() => navigate("/builder?template=professional")}
+            />
+            <TemplateCard
+              title="Minimalist"
+              description="Simple and elegant design focused on content"
+              imageSrc="/templates/minimalist.png"
+              onClick={() => navigate("/builder?template=minimalist")}
+            />
+            <TemplateCard
+              title="Creative"
+              description="Stand out with a unique and creative layout"
+              imageSrc="/templates/creative.png"
+              onClick={() => navigate("/builder?template=creative")}
+            />
+            <TemplateCard
+              title="Modern"
+              description="Contemporary design with a professional edge"
+              imageSrc="/templates/modern.png"
+              onClick={() => navigate("/builder?template=modern")}
+            />
+            <TemplateCard
+              title="Basic"
+              description="Traditional resume layout, perfect for ATS"
+              imageSrc="/templates/basic.png"
+              onClick={() => navigate("/builder?template=basic")}
+            />
+            <TemplateCard
+              title="Elegant"
+              description="Professional layout with a distinctive dark theme"
+              imageSrc="/templates/elegant.png"
+              onClick={() => navigate("/builder?template=elegant")}
+            />
+            <TemplateCard
+              title="Mechanical"
+              description="Modern technical design with engineering focus"
+              imageSrc="/templates/mechanical.png"
+              onClick={() => navigate("/builder?template=mechanical")}
+            />
+            <TemplateCard
+              title="Simple"
+              description="Clean and minimal design with perfect typography"
+              imageSrc="/templates/simple.png"
+              onClick={() => navigate("/builder?template=simple")}
+            />
+            <TemplateCard
+              title="Accent"
+              description="Modern design with distinctive side accent"
+              imageSrc="/templates/accent.png"
+              onClick={() => navigate("/builder?template=accent")}
+            />
+            <TemplateCard
+              title="Compact"
+              description="Clean and efficient layout with clear sections"
+              imageSrc="/templates/compact.png"
+              onClick={() => navigate("/builder?template=compact")}
+            />
+            <TemplateCard
+              title="Executive"
+              description="Professional layout with clear sections and metrics"
+              imageSrc="/templates/executive.png"
+              onClick={() => navigate("/builder?template=executive")}
+            />
+            <TemplateCard
+              title="Vibrant"
+              description="Modern dark theme with vibrant red accents"
+              imageSrc="/templates/vibrant.png"
+              onClick={() => navigate("/builder?template=vibrant")}
+            />
+            <TemplateCard
+              title="Elegant Split"
+              description="Professional two-column layout with photo"
+              imageSrc="/templates/elegant-split.png"
+              onClick={() => navigate("/builder?template=elegantSplit")}
+            />
+            <TemplateCard
+              title="Aqua Split"
+              description="Modern two-column layout with fresh aqua accent"
+              imageSrc="/templates/aqua-split.png"
+              onClick={() => navigate("/builder?template=aquaSplit")}
+            />
+            <TemplateCard
+              title="Standard"
+              description="Traditional resume format with clean typography"
+              imageSrc="/templates/standard.png"
+              onClick={() => navigate("/builder?template=standard")}
+            />
+            <TemplateCard
+              title="Coral Modern"
+              description="Clean and professional design with coral accents"
+              imageSrc="/templates/coral-modern.png"
+              onClick={() => navigate("/builder?template=coralModern")}
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -106,16 +177,21 @@ const TemplateCard = ({
   onClick: () => void;
 }) => (
   <div
-    className="cv-section cursor-pointer hover:shadow-lg p-6 rounded-lg border border-gray-300 transition duration-300"
+    className="group cursor-pointer hover:shadow-lg transition-all duration-300 rounded-lg overflow-hidden border border-gray-200"
     onClick={onClick}
   >
-    <img
-      src={imageSrc}
-      alt={title}
-      className="w-full h-40 object-cover rounded-md mb-4"
-    />
-    <h3 className="text-xl font-semibold mb-2">{title}</h3>
-    <p className="text-gray-600">{description}</p>
+    <div className="aspect-[210/297] relative overflow-hidden">
+      <img
+        src={imageSrc}
+        alt={`${title} Template Preview`}
+        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+      />
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+    </div>
+    <div className="p-4">
+      <h3 className="text-xl font-semibold mb-2">{title}</h3>
+      <p className="text-gray-600 text-sm">{description}</p>
+    </div>
   </div>
 );
 
