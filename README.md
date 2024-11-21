@@ -6,6 +6,8 @@ Welcome to **CV Wizardry**! This tool is designed to help you create, customize,
 ![screencapture-localhost-cv-wizardy-builder-2024-11-21-18_26_13](https://github.com/user-attachments/assets/093b05af-b885-465d-8241-3a8a78c9c98a)
 
 
+[LIVE DEMO](https://adelelawady.github.io/cv_wizardy)
+
 Features ✨
 ----------
 
