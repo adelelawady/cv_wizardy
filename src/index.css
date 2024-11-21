@@ -87,3 +87,100 @@
 .cv-button-secondary {
   @apply cv-button bg-cv-secondary text-white hover:bg-gray-700;
 }
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    -webkit-filter: opacity(1) !important;
+  }
+
+  .print-page {
+    background: white !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Page break utilities */
+  .page-break-before {
+    page-break-before: always !important;
+    break-before: always !important;
+  }
+
+  .page-break-after {
+    page-break-after: always !important;
+    break-after: always !important;
+  }
+
+  .page-break-avoid {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Ensure sections don't break across pages */
+  section, .section {
+    break-inside: avoid-page !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Allow grid layouts to break naturally */
+  .grid {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  /* Ensure headers stay with their content */
+  h1, h2, h3, h4, h5, h6 {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  /* Ensure lists don't break in the middle */
+  li {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Force background colors and images to print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Ensure proper page size */
+  #resume-template {
+    width: 210mm !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Fix for background colors and gradients */
+  @-moz-document url-prefix() {
+    .bg-gradient-to-r {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+
+  /* Ensure dark backgrounds print properly */
+  .bg-black {
+    background-color: black !important;
+  }
+
+  /* Ensure text remains visible on dark backgrounds */
+  .text-white {
+    color: white !important;
+  }
+}

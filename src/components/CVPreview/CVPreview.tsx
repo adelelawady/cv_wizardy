@@ -2,6 +2,9 @@ import { CVData } from "@/pages/Builder";
 import { ModernTemplate } from "./templates/ModernTemplate";
 import { MinimalTemplate } from "./templates/MinimalTemplate";
 import { ClassicTemplate } from "./templates/ClassicTemplate";
+import { MinimalistTemplate } from "../templates/MinimalistTemplate";
+import { ProfessionalTemplate } from "../templates/ProfessionalTemplate";
+
 
 export type TemplateType = "classic" | "modern" | "minimal";
 
@@ -14,8 +17,9 @@ export const CVPreview = ({ data, template }: CVPreviewProps) => {
   const templates = {
     classic: ClassicTemplate,
     modern: ModernTemplate,
-    minimal: MinimalTemplate,
+    minimal: MinimalTemplate
   };
+
 
   const SelectedTemplate = templates[template];
   return <SelectedTemplate data={data} />;

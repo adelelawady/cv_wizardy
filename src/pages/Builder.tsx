@@ -1,203 +1,343 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { PersonalInfoForm } from "@/components/CVForm/PersonalInfoForm";
-import { WorkExperienceForm } from "@/components/CVForm/WorkExperienceForm";
-import { EducationForm } from "@/components/CVForm/EducationForm";
-import { SkillsForm } from "@/components/CVForm/SkillsForm";
-import { CVPreview } from "@/components/CVPreview/CVPreview";
-import { toast } from "@/components/ui/use-toast";
-import html2pdf from 'html2pdf.js';
+import React, { useState, useRef } from 'react';
+import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
+import { TemplateBuilder } from '@/components/builder/TemplateBuilder';
+import { TemplateSelector } from '@/components/builder/TemplateSelector';
+import { PreviewModal } from '@/components/preview/PreviewModal';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { PersonalInfoForm } from '@/components/forms/PersonalInfoForm';
+import { ExperienceForm } from '@/components/forms/ExperienceForm';
+import { EducationForm } from '@/components/forms/EducationForm';
+import { SkillsForm } from '@/components/forms/SkillsForm';
+import { ProjectsForm } from '@/components/forms/ProjectsForm';
+import { CertificationsForm } from '@/components/forms/CertificationsForm';
+import { LanguagesForm } from '@/components/forms/LanguagesForm';
+import { InterestsForm } from '@/components/forms/InterestsForm';
+import { TemplateType, useTemplate } from '@/contexts/TemplateContext';
+import { ChevronLeft, ChevronRight, Loader2, Download, Check, FileIcon, FileText, Image, Printer } from 'lucide-react';
+import { exportToPDF, exportToImage, exportToWord } from '@/lib/export';
+import { useToast } from "@/components/ui/use-toast";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { TemplateType } from "@/components/CVPreview/CVPreview";
-import { Label } from "@/components/ui/label";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from '@/lib/utils';
 
-const steps = ["Personal Info", "Work Experience", "Education", "Skills"];
+const formSteps = [
+  { id: 'personal', title: 'Personal Info', component: PersonalInfoForm },
+  { id: 'experience', title: 'Experience', component: ExperienceForm },
+  { id: 'education', title: 'Education', component: EducationForm },
+  { id: 'skills', title: 'Skills', component: SkillsForm },
+  { id: 'languages', title: 'Languages', component: LanguagesForm },
+  { id: 'interests', title: 'Interests', component: InterestsForm },
+  { id: 'projects', title: 'Projects', component: ProjectsForm },
+  { id: 'certifications', title: 'Certifications', component: CertificationsForm },
+] as const;
 
-export type CVData = {
-  personalInfo: {
-    name: string;
-    email: string;
-    phone: string;
-    location: string;
-  };
-  workExperience: Array<{
-    company: string;
-    position: string;
-    startDate: string;
-    endDate: string;
-    description: string;
-  }>;
-  education: Array<{
-    school: string;
-    degree: string;
-    graduationDate: string;
-  }>;
-  skills: string[];
-};
+const templates = [
+  {
+    id: 'professional' as const,
+    name: 'Professional',
+    description: 'Clean and modern design with a professional look',
+  },
+  {
+    id: 'minimalist' as const,
+    name: 'Minimalist',
+    description: 'Simple and elegant design focused on content',
+  },
+  {
+    id: 'creative' as const,
+    name: 'Creative',
+    description: 'Stand out with a unique and creative layout',
+  },
+  {
+    id: 'modern' as const,
+    name: 'Modern',
+    description: 'Contemporary design with a professional edge',
+  },
+  {
+    id: 'basic' as const,
+    name: 'Basic',
+    description: 'Traditional resume layout, perfect for ATS',
+  },
+  {
+    id: 'elegant' as const,
+    name: 'Elegant',
+    description: 'Professional layout with a distinctive dark theme',
+  },
+  {
+    id: 'mechanical' as const,
+    name: 'Mechanical',
+    description: 'Modern technical design with engineering focus',
+  },
+  {
+    id: 'simple' as const,
+    name: 'Simple',
+    description: 'Clean and minimal design with perfect typography',
+    thumbnail: '/templates/simple.png'
+  },
+  {
+    id: 'accent' as const,
+    name: 'Accent',
+    description: 'Modern design with distinctive side accent',
+    thumbnail: '/templates/accent.png'
+  },
+  {
+    id: 'compact' as const,
+    name: 'Compact',
+    description: 'Clean and efficient layout with clear sections',
+    thumbnail: '/templates/compact.png'
+  },
+] as const;
 
-const Builder = () => {
+export function Builder() {
+  const { templateData, updateTemplateData, activeTemplate, setActiveTemplate } = useTemplate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const defaultTab = searchParams.get('tab') || 'templates';
   const [currentStep, setCurrentStep] = useState(0);
-  const [cvData, setCVData] = useState<CVData>({
-    personalInfo: { name: "", email: "", phone: "", location: "" },
-    workExperience: [],
-    education: [],
-    skills: [],
-  });
-  const [template, setTemplate] = useState<TemplateType>("classic");
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const { toast } = useToast();
+  const templateRef = useRef<HTMLDivElement>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const navigate = useNavigate();
 
-  const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
+  const nextStep = () => {
+    if (currentStep < formSteps.length - 1) {
+      setCurrentStep(current => current + 1);
     }
   };
 
-  const handleBack = () => {
+  const prevStep = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep(current => current - 1);
     }
   };
 
-  const handleExport = async () => {
-    const element = document.getElementById('cv-preview');
-    if (!element) {
-      toast({
-        title: "Error",
-        description: "Could not generate PDF. Please try again.",
-        variant: "destructive",
-      });
+  const handleExport = async (format: 'pdf' | 'image' | 'word' | 'print') => {
+    if (!templateRef.current) return;
+    
+    if (format === 'print') {
+      handlePrint();
       return;
     }
 
-    const opt = {
-      margin: 1,
-      filename: `${cvData.personalInfo.name.toLowerCase().replace(/\s+/g, '-')}-cv.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
-
+    setIsExporting(true);
     try {
-      toast({
-        title: "Generating PDF",
-        description: "Please wait while we generate your CV...",
-      });
+      switch (format) {
+        case 'pdf':
+          await exportToPDF('resume-template');
+          break;
+        case 'image':
+          await exportToImage('resume-template');
+          break;
+        case 'word':
+          await exportToWord('resume-template');
+          break;
+      }
       
-      await html2pdf().set(opt).from(element).save();
-      
       toast({
-        title: "Success!",
-        description: "Your CV has been downloaded.",
+        title: "Export successful",
+        description: `Resume exported as ${format.toUpperCase()} file`,
       });
     } catch (error) {
+      console.error('Export error:', error);
       toast({
-        title: "Error",
-        description: "Failed to generate PDF. Please try again.",
+        title: "Export failed",
+        description: "There was an error exporting your resume",
         variant: "destructive",
       });
+    } finally {
+      setIsExporting(false);
     }
   };
 
+  const CurrentFormComponent = formSteps[currentStep].component;
+
+  const handleTemplateSelect = (templateId: TemplateType) => {
+    setActiveTemplate(templateId);
+  };
+
+  const handlePrint = () => {
+    navigate('/print');
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex gap-8">
-          {/* Form Section */}
-          <div className="w-1/2">
-            <div className="cv-section">
-              <div className="flex justify-between items-center mb-8">
-                <h2 className="text-2xl font-semibold">
-                  {steps[currentStep]}
-                </h2>
-                <div className="text-sm text-gray-500">
-                  Step {currentStep + 1} of {steps.length}
+    <div className="min-h-screen bg-background">
+      <div className="max-w-[1800px] mx-auto px-2 py-2">
+        <Tabs defaultValue={defaultTab} className="space-y-2">
+          <div className="flex items-center justify-between">
+            <TabsList>
+              <TabsTrigger value="editor">Editor</TabsTrigger>
+              { /*<TabsTrigger value="templates">Templates</TabsTrigger> */}
+            </TabsList>
+            
+            <div className="space-x-2">
+              <Button 
+                variant="outline"
+                onClick={() => setPreviewOpen(true)}
+              >
+                Preview
+              </Button>
+              
+              <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button disabled={isExporting}>
+          {isExporting ? (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <Download className="w-4 h-4 mr-2" />
+          )}
+          Export
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => handleExport('pdf')}>
+          <FileText className="w-4 h-4 mr-2" />
+          Export as PDF
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => handleExport('image')}>
+          <Image className="w-4 h-4 mr-2" />
+          Export as Image
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => handleExport('word')}>
+          <FileIcon className="w-4 h-4 mr-2" />
+          Export as Word
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => handleExport('print')}>
+          <Printer className="w-4 h-4 mr-2" />
+          Print Resume
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+            </div>
+          </div>
+
+          <TabsContent value="editor" className="space-y-2">
+            <div className="grid grid-cols-12 gap-2 h-[calc(100vh-5rem)]">
+              {/* Left sidebar - Form controls */}
+              <div className="col-span-3 bg-background rounded-lg border flex flex-col h-[calc(100vh-6rem)]">
+                {/* Step indicator - Fixed at top */}
+                <div className="p-3 border-b shrink-0">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-sm text-muted-foreground">
+                      Step {currentStep + 1} of {formSteps.length}
+                    </span>
+                    <span className="font-medium">
+                      {formSteps[currentStep].title}
+                    </span>
+                  </div>
+                  <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-primary transition-all duration-300"
+                      style={{ 
+                        width: `${((currentStep + 1) / formSteps.length) * 100}%` 
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* Template Selection */}
-              <div className="mb-8">
-                <Label>Template Style</Label>
-                <Select value={template} onValueChange={(value: TemplateType) => setTemplate(value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a template" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="classic">Classic</SelectItem>
-                    <SelectItem value="modern">Modern</SelectItem>
-                    <SelectItem value="minimal">Minimal</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                {/* Form content - Scrollable */}
+                <div className="flex-1 overflow-hidden">
+                  <ScrollArea 
+                    className="h-full px-4 py-4"
+                    scrollHideDelay={0}
+                  >
+                    <CurrentFormComponent />
+                  </ScrollArea>
+                </div>
 
-              {currentStep === 0 && (
-                <PersonalInfoForm
-                  data={cvData.personalInfo}
-                  onChange={(data) =>
-                    setCVData({ ...cvData, personalInfo: data })
-                  }
-                />
-              )}
-              {currentStep === 1 && (
-                <WorkExperienceForm
-                  data={cvData.workExperience}
-                  onChange={(data) =>
-                    setCVData({ ...cvData, workExperience: data })
-                  }
-                />
-              )}
-              {currentStep === 2 && (
-                <EducationForm
-                  data={cvData.education}
-                  onChange={(data) =>
-                    setCVData({ ...cvData, education: data })
-                  }
-                />
-              )}
-              {currentStep === 3 && (
-                <SkillsForm
-                  data={cvData.skills}
-                  onChange={(data) => setCVData({ ...cvData, skills: data })}
-                />
-              )}
-
-              <div className="flex justify-between mt-8">
-                <Button
-                  onClick={handleBack}
-                  disabled={currentStep === 0}
-                  variant="outline"
-                >
-                  Back
-                </Button>
-                <div className="flex gap-4">
-                  {currentStep === steps.length - 1 ? (
-                    <Button onClick={handleExport} className="cv-button-primary">
-                      Export PDF
+                {/* Navigation buttons - Fixed at bottom */}
+                <div className="p-3 border-t bg-background mt-auto shrink-0">
+                  <div className="flex justify-between">
+                    <Button
+                      variant="outline"
+                      onClick={prevStep}
+                      disabled={currentStep === 0}
+                    >
+                      <ChevronLeft className="w-4 h-4 mr-2" />
+                      Previous
                     </Button>
-                  ) : (
-                    <Button onClick={handleNext} className="cv-button-primary">
+                    <Button
+                      onClick={nextStep}
+                      disabled={currentStep === formSteps.length - 1}
+                    >
                       Next
+                      <ChevronRight className="w-4 h-4 ml-2" />
                     </Button>
-                  )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Middle - Resume preview */}
+              <div className="col-span-7 bg-muted rounded-lg overflow-hidden">
+                <ScrollArea className="h-[calc(100vh-6rem)]">
+                  <div className="p-6 flex justify-center min-h-full">
+                    <div 
+                      className="w-[210mm] bg-white shadow-xl transform scale-[0.75] origin-top"
+                      style={{ 
+                        marginBottom: 'calc(-297mm * 0.25)',
+                        marginTop: '-1rem'
+                      }}
+                    >
+                      <TemplateBuilder containerRef={templateRef} />
+                    </div>
+                  </div>
+                </ScrollArea>
+              </div>
+
+              {/* Right sidebar - Quick template selector */}
+              <div className="col-span-2 bg-background rounded-lg border h-[calc(100vh-6rem)]">
+                <div className="h-full flex flex-col">
+                  <h3 className="font-semibold p-3 border-b shrink-0">Templates</h3>
+                  <ScrollArea className="flex-1 p-2">
+                    <div className="space-y-1 pr-2">
+                      {templates.map((template) => (
+                        <button
+                          key={template.id}
+                          onClick={() => handleTemplateSelect(template.id)}
+                          className={cn(
+                            "w-full text-left px-2 py-1.5 rounded-lg text-sm transition-colors relative",
+                            "hover:bg-accent hover:text-accent-foreground",
+                            "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+                            activeTemplate === template.id
+                              ? "bg-primary text-primary-foreground"
+                              : "text-muted-foreground"
+                          )}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <span className="font-medium">{template.name}</span>
+                              <p className="text-xs mt-0.5 line-clamp-2 opacity-80">
+                                {template.description}
+                              </p>
+                            </div>
+                            {activeTemplate === template.id && (
+                              <Check className="w-4 h-4 shrink-0 ml-2" />
+                            )}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </div>
               </div>
             </div>
-          </div>
+          </TabsContent>
 
-          {/* Preview Section */}
-          <div className="w-1/2 sticky top-8">
-            <div id="cv-preview">
-              <CVPreview data={cvData} template={template} />
-            </div>
-          </div>
-        </div>
+          <TabsContent value="templates">
+            <TemplateSelector />
+          </TabsContent>
+        </Tabs>
       </div>
+
+      <PreviewModal 
+        open={previewOpen} 
+        onOpenChange={setPreviewOpen}
+      />
     </div>
   );
-};
-
-export default Builder;
+}
